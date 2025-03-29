@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.floatpanes" path="/org/gnome/shell/extensions/floatpanes/">
+    <key name="pane-toggle-shortcut" type="as">
+      <default><![CDATA[['<Super>space']]]></default>
+      <summary>Shortcut to toggle panes</summary>
+      <description>Keyboard shortcut to toggle the visibility of floating panes</description>
+    </key>
+    <key name="always-on-top" type="b">
+      <default>true</default>
+      <summary>Always on top</summary>
+      <description>Whether floating panes should always be on top of other windows</description>
+    </key>
+    <key name="remember-position" type="b">
+      <default>true</default>
+      <summary>Remember position</summary>
+      <description>Whether to remember the position of panes between sessions</description>
+    </key>
+    <key name="remember-size" type="b">
+      <default>true</default>
+      <summary>Remember size</summary>
+      <description>Whether to remember the size of panes between sessions</description>
+    </key>
+    <key name="saved-panes" type="a{sv}">
+      <default>{}</default>
+      <summary>Saved panes</summary>
+      <description>Saved pane configurations (position, size, command, etc.)</description>
+    </key>
+  </schema>
+</schemalist>

@@ -1,0 +1,27 @@
+{
+  "name": "gnome-floatpanes",
+  "version": "0.0.1",
+  "description": "Create persistent floating application panes that can be toggled on/off",
+  "type": "module",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angelsen/gnome-floatpanes.git"
+  },
+  "author": "Fredrik Angelsen",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/angelsen/gnome-floatpanes/issues"
+  },
+  "homepage": "https://github.com/angelsen/gnome-floatpanes#readme",
+  "sideEffects": false,
+  "devDependencies": {
+    "eslint": "^9.23.0",
+    "eslint-plugin-jsdoc": "^50.6.9",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@girs/gjs": "^4.0.0-beta.23",
+    "@girs/gnome-shell": "^48.0.2"
+  }
+}

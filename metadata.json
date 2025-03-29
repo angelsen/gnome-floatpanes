@@ -1,0 +1,10 @@
+{
+    "name": "GNOME FloatPanes",
+    "description": "Create persistent floating application panes that can be toggled on/off",
+    "uuid": "floatpanes@angelsen.github.com",
+    "url": "https://github.com/angelsen/gnome-floatpanes",
+    "settings-schema": "org.gnome.shell.extensions.floatpanes",
+    "shell-version": [
+        "48"
+    ]
+}
