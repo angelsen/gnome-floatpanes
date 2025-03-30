@@ -22,6 +22,18 @@ export default class FloatPanesPreferences extends ExtensionPreferences {
             description: _('Configure how floating panes behave'),
         });
         generalPage.add(behaviorGroup);
+        
+        // Add a debug mode switch
+        try {
+            const debugModeRow = new Adw.SwitchRow({
+                title: _('Debug Mode'),
+                subtitle: _('Enable detailed logging for troubleshooting'),
+            });
+            behaviorGroup.add(debugModeRow);
+            this._settings.bind('debug-mode', debugModeRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+        } catch (e) {
+            console.log('Debug mode setting not available yet');
+        }
 
         // Always on top switch
         const alwaysOnTopRow = new Adw.SwitchRow({
@@ -121,6 +133,8 @@ export default class FloatPanesPreferences extends ExtensionPreferences {
 
         editButton.connect('clicked', () => {
             // TODO: Implement shortcut editing
+            // console.log() is recommended over console.debug() in prefs.ts
+            // since debug won't show without debug-mode enabled
             console.log(`Edit shortcut for ${settingName} (not implemented yet)`);
         });
 

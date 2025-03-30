@@ -12,6 +12,7 @@ import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import {PaneManager} from './lib/paneManager.js';
 import {WindowTracker} from './lib/windowTracker.js';
 import {UI} from './lib/ui.js';
+import {Logger} from './lib/logger.js';
 
 export default class FloatPanesExtension extends Extension {
     private _settings?: Gio.Settings;
@@ -20,9 +21,11 @@ export default class FloatPanesExtension extends Extension {
     private _windowTracker?: WindowTracker;
     private _ui?: UI;
     private _keybindings: Map<string, number> = new Map();
+    private _logger?: Logger;
 
     enable() {
         this._settings = this.getSettings();
+        this._logger = new Logger(this);
         this._setupIndicator();
         this._paneManager = new PaneManager(this);
         this._windowTracker = new WindowTracker(this);
@@ -34,7 +37,7 @@ export default class FloatPanesExtension extends Extension {
         // Set up keyboard shortcuts
         this._bindShortcuts();
         
-        console.log(`${this.metadata.name}: enabled`);
+        this._logger.info('enabled');
     }
 
     disable() {
@@ -61,8 +64,12 @@ export default class FloatPanesExtension extends Extension {
             this._indicator = undefined;
         }
 
+        if (this._logger) {
+            this._logger.info('disabled');
+            this._logger = undefined;
+        }
+
         this._settings = undefined;
-        console.log(`${this.metadata.name}: disabled`);
     }
 
     private _setupIndicator() {
@@ -81,9 +88,9 @@ export default class FloatPanesExtension extends Extension {
     }
 
     private _handleUIAction(action?: string) {
-        if (!this._paneManager) return;
+        if (!this._paneManager || !this._logger) return;
         
-        console.log(`Handling UI action: ${action || 'create new pane'}`);
+        this._logger.debug(`Handling UI action: ${action || 'create new pane'}`);
         
         // Execute action directly - we'll handle menu closure in the UI class
         if (!action) {
@@ -93,11 +100,11 @@ export default class FloatPanesExtension extends Extension {
             this._paneManager.toggleAllPanes();
         } else if (action.startsWith('toggle:')) {
             const paneId = action.substring(7);
-            console.log(`Toggling pane with ID: ${paneId}`);
+            this._logger.debug(`Toggling pane with ID: ${paneId}`);
             this._paneManager.togglePane(paneId);
         } else if (action.startsWith('remove:')) {
             const paneId = action.substring(7);
-            console.log(`Removing pane with ID: ${paneId}`);
+            this._logger.debug(`Removing pane with ID: ${paneId}`);
             this._paneManager.removePane(paneId);
         } else if (action.includes('webkit-app.js')) {
             // Create a specific pane with WebKitGTK launcher
@@ -154,7 +161,7 @@ export default class FloatPanesExtension extends Extension {
             
             return 1; // Just a placeholder, real ID handling would be more complex
         } catch (e) {
-            console.error(`Failed to add keybinding ${name}:`, e);
+            this._logger?.error(`Failed to add keybinding ${name}:`, e);
             return null;
         }
     }

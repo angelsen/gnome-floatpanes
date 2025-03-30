@@ -38,5 +38,10 @@
       <summary>Default height percentage</summary>
       <description>Default height of new panes as a percentage of screen height</description>
     </key>
+    <key name="debug-mode" type="b">
+      <default>false</default>
+      <summary>Debug mode</summary>
+      <description>Enable debug logging for the extension</description>
+    </key>
   </schema>
 </schemalist>
