@@ -10,6 +10,9 @@ let args = ARGV;
 let url = args[0] || "https://claude.ai/new";
 let title = args[1] || url.split("//")[1];
 
+// Disable accessibility bridge to reduce D-Bus errors
+GLib.setenv('NO_AT_BRIDGE', '1', true);
+
 // Initialize GTK
 Gtk.init();
 
