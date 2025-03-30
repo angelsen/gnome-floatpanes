@@ -11,7 +11,7 @@ Create persistent floating application panes for quick access to your favorite t
 GNOME FloatPanes lets you launch applications in floating windows that can be toggled on/off while maintaining their state. These panes float above your workspace, enabling quick access to frequently used tools without disrupting your main workflow.
 
 <p align="center">
-  <img src="resources/screenshot.png" alt="GNOME FloatPanes Screenshot" width="800" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-top: 10px;"/>
+  <img src="resources/screenshot_styled.png" alt="GNOME FloatPanes Screenshot" width="800"/>
 </p>
 
 ## ✨ Features
