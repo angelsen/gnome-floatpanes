@@ -46,6 +46,41 @@ export default class FloatPanesPreferences extends ExtensionPreferences {
         });
         behaviorGroup.add(rememberSizeRow);
         this._settings.bind('remember-size', rememberSizeRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+        
+        // Sizing group
+        const sizingGroup = new Adw.PreferencesGroup({
+            title: _('Window Size'),
+            description: _('Configure default size of floating panes'),
+        });
+        generalPage.add(sizingGroup);
+        
+        // Default width percentage
+        const widthRow = new Adw.SpinRow({
+            title: _('Default width'),
+            subtitle: _('Width as percentage of screen size'),
+            adjustment: new Gtk.Adjustment({
+                lower: 10,
+                upper: 100,
+                step_increment: 5,
+                value: this._settings.get_int('default-width-percent'),
+            }),
+        });
+        sizingGroup.add(widthRow);
+        this._settings.bind('default-width-percent', widthRow, 'value', Gio.SettingsBindFlags.DEFAULT);
+        
+        // Default height percentage
+        const heightRow = new Adw.SpinRow({
+            title: _('Default height'),
+            subtitle: _('Height as percentage of screen size'),
+            adjustment: new Gtk.Adjustment({
+                lower: 10,
+                upper: 100,
+                step_increment: 5,
+                value: this._settings.get_int('default-height-percent'),
+            }),
+        });
+        sizingGroup.add(heightRow);
+        this._settings.bind('default-height-percent', heightRow, 'value', Gio.SettingsBindFlags.DEFAULT);
 
         // Create shortcuts page
         const shortcutsPage = new Adw.PreferencesPage({

@@ -26,5 +26,17 @@
       <summary>Saved panes</summary>
       <description>Saved pane configurations (position, size, command, etc.)</description>
     </key>
+    <key name="default-width-percent" type="i">
+      <default>70</default>
+      <range min="10" max="100"/>
+      <summary>Default width percentage</summary>
+      <description>Default width of new panes as a percentage of screen width</description>
+    </key>
+    <key name="default-height-percent" type="i">
+      <default>70</default>
+      <range min="10" max="100"/>
+      <summary>Default height percentage</summary>
+      <description>Default height of new panes as a percentage of screen height</description>
+    </key>
   </schema>
 </schemalist>

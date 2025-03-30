@@ -1,9 +1,9 @@
 NAME=floatpanes
 DOMAIN=angelsen.github.com
 
-.PHONY: all pack install clean
+.PHONY: all pack install clean schemas
 
-all: dist/extension.js
+all: dist/extension.js schemas/gschemas.compiled
 
 node_modules: package.json
 	npm install
@@ -14,6 +14,8 @@ dist/extension.js dist/prefs.js: node_modules
 
 schemas/gschemas.compiled: schemas/org.gnome.shell.extensions.$(NAME).gschema.xml
 	glib-compile-schemas schemas
+
+schemas: schemas/gschemas.compiled
 
 $(NAME).zip: dist/extension.js dist/prefs.js schemas/gschemas.compiled
 	@cp -r schemas dist/

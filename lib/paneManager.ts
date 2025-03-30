@@ -428,17 +428,49 @@ export class PaneManager {
             window.make_above();
         }
         
-        // Set size and position if we have them saved
-        if (pane.lastSize && this._settings.get_boolean('remember-size')) {
-            window.move_resize_frame(true, 
-                window.get_frame_rect().x, 
-                window.get_frame_rect().y, 
-                pane.lastSize.width, 
-                pane.lastSize.height);
-        }
+        // Get the monitor geometry
+        const monitor = window.get_monitor();
+        const workArea = global.display.get_monitor_geometry(monitor);
         
-        if (pane.lastPosition && this._settings.get_boolean('remember-position')) {
-            window.move_frame(true, pane.lastPosition.x, pane.lastPosition.y);
+        // If we don't have saved size/position or don't want to remember them,
+        // set window to default size from settings and center it
+        if ((!pane.lastSize || !this._settings.get_boolean('remember-size')) ||
+            (!pane.lastPosition || !this._settings.get_boolean('remember-position'))) {
+                
+            // Get width and height percentages from settings
+            const widthPercent = this._settings.get_int('default-width-percent') / 100;
+            const heightPercent = this._settings.get_int('default-height-percent') / 100;
+            
+            // Calculate size based on screen dimensions and settings
+            const width = Math.floor(workArea.width * widthPercent);
+            const height = Math.floor(workArea.height * heightPercent);
+            
+            // Calculate center position
+            const x = workArea.x + Math.floor((workArea.width - width) / 2);
+            const y = workArea.y + Math.floor((workArea.height - height) / 2);
+            
+            // Apply size and position
+            window.move_resize_frame(true, x, y, width, height);
+            
+            // Save these values for future reference
+            pane.lastSize = { width, height };
+            pane.lastPosition = { x, y };
+            this._savePanes();
+            
+            console.log(`Set window size to ${width}x${height} and position to ${x},${y}`);
+        } else {
+            // Set size and position if we have them saved
+            if (pane.lastSize && this._settings.get_boolean('remember-size')) {
+                window.move_resize_frame(true, 
+                    window.get_frame_rect().x, 
+                    window.get_frame_rect().y, 
+                    pane.lastSize.width, 
+                    pane.lastSize.height);
+            }
+            
+            if (pane.lastPosition && this._settings.get_boolean('remember-position')) {
+                window.move_frame(true, pane.lastPosition.x, pane.lastPosition.y);
+            }
         }
         
         // Hide window if pane is not supposed to be visible
