@@ -108,7 +108,40 @@ export default class FloatPanesExtension extends Extension {
             this._paneManager.removePane(paneId);
         } else if (action.includes('webkit-app.js')) {
             // Create a specific pane with WebKitGTK launcher
-            this._paneManager.createNewPane(action);
+            // Need to add size parameters to the command
+            const baseCommand = action;
+            
+            // Get monitor geometry to calculate window size
+            const monitor = global.display.get_current_monitor();
+            const workArea = global.display.get_monitor_geometry(monitor);
+            
+            // Get width and height percentages from settings
+            let widthPercent = 0.7;  // Default to 70%
+            let heightPercent = 0.7; // Default to 70%
+            
+            if (this._settings) {
+                widthPercent = this._settings.get_int('default-width-percent') / 100;
+                heightPercent = this._settings.get_int('default-height-percent') / 100;
+            }
+            
+            // Calculate size based on screen dimensions and settings
+            const width = Math.floor(workArea.width * widthPercent);
+            const height = Math.floor(workArea.height * heightPercent);
+            
+            // Extract URL and title from command
+            const parts = baseCommand.split(' ');
+            if (parts.length >= 3) {
+                const webkitPath = parts[0];
+                const url = parts[1];
+                const title = parts[2];
+                
+                // Create command with size parameters
+                const fullCommand = `${webkitPath} ${url} ${title} ${width} ${height}`;
+                this._paneManager?.createNewPane(fullCommand);
+            } else {
+                // Fallback to original command if parsing fails
+                this._paneManager?.createNewPane(action);
+            }
         }
         
         // Update UI to reflect changes

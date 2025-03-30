@@ -9,6 +9,12 @@ const {Gtk, WebKit, GLib} = imports.gi;
 let args = ARGV;
 let url = args[0] || "https://claude.ai/new";
 let title = args[1] || url.split("//")[1];
+let width = parseInt(args[2], 10) || 800;
+let height = parseInt(args[3], 10) || 600;
+
+// Validate width/height to be reasonable
+width = Math.max(200, Math.min(width, 4000));
+height = Math.max(200, Math.min(height, 4000));
 
 // Disable accessibility bridge to reduce D-Bus errors
 GLib.setenv('NO_AT_BRIDGE', '1', true);
@@ -27,8 +33,8 @@ app.connect('activate', () => {
     const window = new Gtk.ApplicationWindow({
         application: app,
         title: title,
-        default_width: 800,
-        default_height: 600,
+        default_width: width,
+        default_height: height,
         // Needed for Wayland - specify initial size using allocation
         halign: Gtk.Align.FILL,
         valign: Gtk.Align.FILL,

@@ -65,7 +65,21 @@ export class PaneManager {
         if (!command) {
             // Default to WebKitGTK launcher with Claude
             const webkitAppPath = `${this._extension.path}/webkit-app.js`;
-            command = `${webkitAppPath} https://claude.ai/new "Claude AI"`;
+            
+            // Get width and height percentages from settings
+            const widthPercent = this._settings.get_int('default-width-percent') / 100;
+            const heightPercent = this._settings.get_int('default-height-percent') / 100;
+            
+            // Get monitor geometry to calculate window size
+            const monitor = global.display.get_current_monitor();
+            const workArea = global.display.get_monitor_geometry(monitor);
+            
+            // Calculate size based on screen dimensions and settings
+            const width = Math.floor(workArea.width * widthPercent);
+            const height = Math.floor(workArea.height * heightPercent);
+            
+            // Create command with size parameters
+            command = `${webkitAppPath} https://claude.ai/new "Claude AI" ${width} ${height}`;
         }
         
         const id = GLib.uuid_string_random();
@@ -439,13 +453,25 @@ export class PaneManager {
             const monitor = window.get_monitor();
             const workArea = global.display.get_monitor_geometry(monitor);
             
-            // Process with a small delay to let the window settle first
-            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
+            // Check if this is a WebKit window launched with size parameters
+            const isWebKitApp = pane.command.includes('webkit-app.js');
+            const hasExplicitSize = pane.command.split(' ').length >= 5; // URL, title, width, height
+            
+            // For WebKit apps launched with explicit size, use a shorter timeout
+            // For other windows, use a longer timeout to ensure window is ready
+            const timeoutDelay = (isWebKitApp && hasExplicitSize) ? 300 : 500;
+            
+            // Process with a delay to let the window settle first
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, timeoutDelay, () => {
                 try {
-                    // If we don't have saved size/position or don't want to remember them,
-                    // set window to default size from settings and center it
-                    if ((!pane.lastSize || !this._settings.get_boolean('remember-size')) ||
-                        (!pane.lastPosition || !this._settings.get_boolean('remember-position'))) {
+                    // Skip resizing for WebKit apps that were launched with size parameters
+                    // unless we have saved sizes we want to restore
+                    const skipInitialResize = isWebKitApp && hasExplicitSize && 
+                        !pane.lastSize && !pane.lastPosition;
+                    
+                    if (!skipInitialResize && 
+                        ((!pane.lastSize || !this._settings.get_boolean('remember-size')) ||
+                         (!pane.lastPosition || !this._settings.get_boolean('remember-position')))) {
                             
                         // Get width and height percentages from settings
                         const widthPercent = this._settings.get_int('default-width-percent') / 100;
@@ -472,7 +498,7 @@ export class PaneManager {
                         } catch (resizeError) {
                             console.error('Error setting initial window size/position:', resizeError);
                         }
-                    } else {
+                    } else if (!skipInitialResize) {
                         // Set size and position if we have them saved - wrap each operation in try/catch
                         if (pane.lastSize && this._settings.get_boolean('remember-size')) {
                             try {
