@@ -87,10 +87,18 @@ export class Logger {
             this._settings.get_boolean('debug-mode');
         } catch (e) {
             // Setting doesn't exist yet, we'll need to add it to the schema
-            this.warn('Debug mode setting not found in schema. Add it to org.gnome.shell.extensions.floatpanes.gschema.xml');
+            console.warn(`${this._prefix} Debug mode setting not found in schema. Add it to org.gnome.shell.extensions.floatpanes.gschema.xml`);
         }
 
         // Update log level based on settings
         this.updateLogLevel();
+        
+        // Connect to settings change to update log level when debug mode changes
+        this._settings.connect('changed::debug-mode', () => {
+            this.updateLogLevel();
+            if (this._logLevel <= LogLevel.DEBUG) {
+                console.debug(`${this._prefix} Debug mode changed: ${this._settings.get_boolean('debug-mode')}`);
+            }
+        });
     }
 }

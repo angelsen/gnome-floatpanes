@@ -25,7 +25,12 @@ app.connect('activate', () => {
         application: app,
         title: title,
         default_width: 800,
-        default_height: 600
+        default_height: 600,
+        // Needed for Wayland - specify initial size using allocation
+        halign: Gtk.Align.FILL,
+        valign: Gtk.Align.FILL,
+        hexpand: true,
+        vexpand: true
     });
     
     // Set app ID for better window tracking

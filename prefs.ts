@@ -24,16 +24,12 @@ export default class FloatPanesPreferences extends ExtensionPreferences {
         generalPage.add(behaviorGroup);
         
         // Add a debug mode switch
-        try {
-            const debugModeRow = new Adw.SwitchRow({
-                title: _('Debug Mode'),
-                subtitle: _('Enable detailed logging for troubleshooting'),
-            });
-            behaviorGroup.add(debugModeRow);
-            this._settings.bind('debug-mode', debugModeRow, 'active', Gio.SettingsBindFlags.DEFAULT);
-        } catch (e) {
-            console.log('Debug mode setting not available yet');
-        }
+        const debugModeRow = new Adw.SwitchRow({
+            title: _('Debug Mode'),
+            subtitle: _('Enable detailed logging for troubleshooting'),
+        });
+        behaviorGroup.add(debugModeRow);
+        this._settings.bind('debug-mode', debugModeRow, 'active', Gio.SettingsBindFlags.DEFAULT);
 
         // Always on top switch
         const alwaysOnTopRow = new Adw.SwitchRow({
